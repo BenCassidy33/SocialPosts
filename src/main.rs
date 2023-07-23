@@ -17,16 +17,13 @@ async fn main() -> std::io::Result<()> {
 async fn index() -> impl Responder {
     let pool = calls::create_pool().await;
 
-    match pool {
-        Ok(_) => {
-            println!("Connected to database")
-        }
+    return match pool {
+        Ok(_) => match calls::fetch_users(&pool.unwrap()).await {
+            Ok(res) => HttpResponse::Ok().json(res),
+            Err(e) => HttpResponse::InternalServerError()
+                .body(format!("Failed to fetch user data {}", e.to_string())),
+        },
 
-        Err(_) => println!("Failed to connect to database"),
-    }
-
-    return match calls::fetch_users(&pool.unwrap()).await {
-        Ok(res) => HttpResponse::Ok().json(res),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(_) => HttpResponse::InternalServerError().body("Failed to connect to database"),
     };
 }
