@@ -15,7 +15,15 @@ async fn main() -> std::io::Result<()> {
 
 #[get("/get/users")]
 async fn index() -> impl Responder {
-    let pool = calls::index().await.ok();
+    let pool = calls::create_pool().await;
+
+    match pool {
+        Ok(_) => {
+            println!("Connected to database")
+        }
+
+        Err(_) => println!("Failed to connect to database"),
+    }
 
     return match calls::fetch_users(&pool.unwrap()).await {
         Ok(res) => HttpResponse::Ok().json(res),

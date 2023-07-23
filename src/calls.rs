@@ -41,7 +41,7 @@ pub enum DatabaseActionError<T> {
     ExternalError(Option<T>),
 }
 
-pub async fn index() -> Result<Pool<Postgres>, sqlx::Error> {
+pub async fn create_pool() -> Result<Pool<Postgres>, sqlx::Error> {
     dotenv().ok();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
@@ -50,7 +50,7 @@ pub async fn index() -> Result<Pool<Postgres>, sqlx::Error> {
         .connect(&database_url)
         .await?;
 
-    sqlx::migrate!("./migrations").run(&pool).await?;
+    // sqlx::migrate!("./migrations").run(&pool).await?;
 
     Ok(pool)
 }
