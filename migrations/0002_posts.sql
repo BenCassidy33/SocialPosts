@@ -1,0 +1,27 @@
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL NOT NULL PRIMARY KEY, 
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    handle VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(username, handle, email)
+
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    id SERIAL NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author_username VARCHAR(255) NOT NULL,
+    author_handle VARCHAR(255) NOT NULL,
+    author_id INT NOT NULL,
+    body VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(author_username) REFERENCES users(username),
+    FOREIGN KEY(author_handle) REFERENCES users(handle),
+    FOREIGN KEY(author_id) REFERENCES users(user_id),
+);
