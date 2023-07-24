@@ -1,5 +1,7 @@
 #![allow(unused_imports, dead_code)]
 
+use super::models::User;
+
 use actix_web::{
     cookie::time::{OffsetDateTime, PrimitiveDateTime},
     get,
@@ -13,40 +15,6 @@ use sqlx::{
     FromRow, Pool, Row,
 };
 use std::{env, error::Error};
-
-#[derive(Debug, FromRow, serde::Serialize, serde::Deserialize)]
-pub struct User {
-    user_id: i32,
-    username: String,
-    email: String,
-    handle: String,
-    password: String,
-    created_at: String,
-    update_at: String,
-}
-
-#[derive(Debug, FromRow, serde::Serialize, serde::Deserialize)]
-pub struct Post {
-    id: i32,
-    title: String,
-    body: String,
-    created_at: String,
-    updated_at: String,
-    user_id: i32,
-}
-
-pub enum DatabaseActionError<T> {
-    ReadError(Option<T>),
-    WriteError(Option<T>),
-    ExternalError(Option<T>),
-}
-
-pub enum UserError {
-    GetError,
-    CreateError,
-    UpdateError,
-    DeleteError,
-}
 
 pub async fn create_pool() -> Result<Pool<Postgres>, sqlx::Error> {
     dotenv().ok();
